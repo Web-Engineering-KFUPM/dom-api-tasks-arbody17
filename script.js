@@ -19,7 +19,13 @@ inside the <p> element with id="t1-msg".
 💡 Hint:
 document.getElementById("t1-msg").innerHTML = "Hello, World!";
 */
- 
+
+document.addEventListener("DOMContentLoaded", function () {
+    const t1Msg = document.getElementById("t1-msg");
+    if (t1Msg) {
+        t1Msg.innerHTML = "Hello, World!";
+    }
+});
 
 /*  
 =======================================
@@ -40,7 +46,16 @@ button.addEventListener("click", function () {
     // change text here
 });
 */
- 
+
+const t2Button = document.getElementById("t2-btn");
+if (t2Button) {
+    t2Button.addEventListener("click", function () {
+        const t2Status = document.getElementById("t2-status");
+        if (t2Status) {
+            t2Status.innerHTML = "You clicked the button!";
+        }
+    });
+}
 
 /*  
 =======================================
@@ -68,7 +83,31 @@ Use:
 data.content   // the quote text
 data.author    // the author
 */
- 
+
+const t3Button = document.getElementById("t3-loadQuote");
+if (t3Button) {
+    t3Button.addEventListener("click", function () {
+        fetch("https://dummyjson.com/quotes/random").then(function (response) {
+            if (!response.ok) {
+                throw new Error("HTTP " + response.status);
+            }
+            return response.json();
+        })
+        .then(function (data) {
+            if (data && data.quote && data.author) {
+                const quote = document.getElementById("t3-quote");
+                const author = document.getElementById("t3-author");
+                if (quote && author) {
+                    quote.innerHTML = data.quote;
+                    author.innerHTML = data.author;
+                }
+            }
+        })
+        .catch(function (err) {
+            throw new Error("HTTP " + err);
+        });
+    });
+}
 
 /*  
 =======================================
@@ -94,3 +133,36 @@ data.main.temp      → temperature (°C)
 data.main.humidity  → humidity (%)
 data.wind.speed     → wind speed (m/s)
 */
+
+const base  = "https://api.openweathermap.org/data/2.5/weather";
+const city  = "Dammam";
+const units = "metric";
+const key   = "7ae5cf1e1321b961b778d04dd722dafe";
+const url = `${base}?q=${encodeURIComponent(city)}&appid=${key}&units=${units}`;
+
+const t4Button = document.getElementById("t4-loadWx");
+if (t4Button) {
+    t4Button.addEventListener("click", function () {
+        fetch(url).then(function (response) {
+            if (!response.ok) {
+                throw new Error("HTTP " + response.status);
+            }
+            return response.json();
+        })
+        .then(function (data) {
+            if (data) {
+                const temperature = document.getElementById("t4-temp");
+                const humidity = document.getElementById("t4-hum");
+                const windSpeed = document.getElementById("t4-wind");
+                if (temperature && humidity && windSpeed) {
+                    temperature.innerHTML = data.main.temp;
+                    humidity.innerHTML = data.main.humidity;
+                    windSpeed.innerHTML = data.wind.speed;
+                }
+            }
+        })
+        .catch(function (err) {
+            throw new Error("HTTP " + err);
+        });
+    });
+}
